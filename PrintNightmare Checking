@@ -1,0 +1,34 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class PrintNightmareVulnerabilityChecker {
+
+    public static void main(String[] args) {
+        String vulnCheckViaCmd = "Get-HotFix -Id KB5005565, KB5005566, KB5005568"; 
+        try {
+            ProcessBuilder builder = new ProcessBuilder("powershell.exe", "/c", vulnCheckViaCmd);
+            builder.redirectErrorStream(true);
+            Process process = builder.start();
+            
+          
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String s = null;
+            boolean haveVulnerablity = true;
+            while ((s = stdInput.readLine()) != null) {
+                if (s.contains("KB5005565") || s.contains("KB5005566") || s.contains("KB5005568")) {
+                    haveVulnerablity = false;
+                    break;
+                }
+            }
+            
+            if (haveVulnerablity) {
+                System.out.println("PrintNightmare have on the system ");
+            } else {
+                System.out.println("404 : Not PrintNightmare found in the system ");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
